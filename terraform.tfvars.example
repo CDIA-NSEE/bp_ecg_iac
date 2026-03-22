@@ -1,0 +1,38 @@
+# Copy this file to terraform.tfvars and fill in real values.
+# NEVER commit terraform.tfvars — it contains secrets.
+# terraform.tfvars is excluded via .gitignore.
+
+# Deployment environment (dev, staging, prod)
+environment = "dev"
+
+# MinIO credentials
+minio_root_user     = "minioadmin"
+minio_root_password = "changeme-strong-password"
+
+# PostgreSQL credentials (used by Airflow)
+postgres_user     = "airflow"
+postgres_password = "changeme-strong-password"
+postgres_db       = "airflow"
+
+# Airflow web UI admin credentials
+airflow_admin_user     = "admin"
+airflow_admin_password = "changeme-strong-password"
+
+# Host path for persistent data (MinIO data, PostgreSQL data)
+# Must be an absolute path that exists on the Docker host.
+data_volume_path = "/opt/bp-ecg/data"
+
+# Port assignments (change if defaults conflict with existing services)
+minio_api_port     = 9000
+minio_console_port = 9001
+trino_port         = 8080
+nessie_port        = 19120
+airflow_port       = 8081
+grafana_port       = 3000
+prometheus_port    = 9090
+
+# Airflow webserver secret key — MUST be changed before production deployment
+airflow_secret_key = "change-me-in-production"
+
+# PostgreSQL database name for Nessie JDBC version store
+nessie_db = "nessie"
