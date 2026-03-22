@@ -1,0 +1,73 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "30 6 * * 1"  # Weekly on Monday at 06:30 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Secret scanning ──────────────────────────────────────────────────────────
+  secret-scan:
+    name: Secret Scanning (TruffleHog)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --results=verified,unknown
+
+  # ── Terraform IaC misconfig scan ─────────────────────────────────────────────
+  # Trivy scans Terraform files for security misconfigurations:
+  # - S3 buckets without versioning / encryption
+  # - Security groups open to 0.0.0.0/0
+  # - IAM wildcards
+  # - Docker provider misconfigs (privileged containers, host network, etc.)
+  # License: Apache-2.0 (free OSS). No token required.
+  iac-scan:
+    name: IaC Misconfig Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivy — Terraform IaC scan
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: config
+          scan-ref: .
+          format: table
+          exit-code: "1"
+          severity: CRITICAL,HIGH
+          # Add misconfig IDs to .trivyignore to suppress accepted deviations.
+
+  # ── Supply-chain health ───────────────────────────────────────────────────────
+  scorecard:
+    name: OpenSSF Scorecard
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: OSSF Scorecard
+        uses: ossf/scorecard-action@v2.4.3
+        with:
+          results_file: scorecard-results.sarif
+          results_format: sarif
+          publish_results: false
+      - name: Upload Scorecard results
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorecard-results
+          path: scorecard-results.sarif
+          retention-days: 5

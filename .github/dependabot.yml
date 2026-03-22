@@ -1,0 +1,23 @@
+version: 2
+
+updates:
+  # Terraform providers (reads .terraform.lock.hcl — commit it for this to work)
+  - package-ecosystem: "terraform"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+    labels:
+      - "dependencies"
+      - "terraform"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+    labels:
+      - "dependencies"
+      - "github-actions"
