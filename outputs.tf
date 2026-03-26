@@ -43,29 +43,34 @@ output "prometheus_url" {
   value       = "http://localhost:${var.prometheus_port}"
 }
 
-output "bucket_intake" {
-  description = "MinIO bucket for incoming ZIP archive audit trail"
-  value       = "bp-ecg-${var.environment}-intake"
+output "bucket_coal" {
+  description = "MinIO bucket - coal layer"
+  value       = "bp-ecg-${var.environment}-coal"
 }
 
-output "bucket_images" {
-  description = "MinIO bucket for processed .png.zst image files"
-  value       = "bp-ecg-${var.environment}-images"
+output "bucket_copper" {
+  description = "MinIO bucket - copper layer"
+  value       = "bp-ecg-${var.environment}-copper"
 }
 
-output "bucket_rejected" {
-  description = "MinIO bucket for invalid/rejected ZIP files"
-  value       = "bp-ecg-${var.environment}-rejected"
+output "bucket_iron" {
+  description = "MinIO bucket - iron layer"
+  value       = "bp-ecg-${var.environment}-iron"
 }
 
-output "bucket_lake" {
-  description = "MinIO bucket for Parquet/Iceberg tables"
-  value       = "bp-ecg-${var.environment}-lake"
+output "bucket_bronze" {
+  description = "MinIO bucket - bronze layer"
+  value       = "bp-ecg-${var.environment}-bronze"
 }
 
-output "bucket_dlq" {
-  description = "MinIO bucket for dead-letter queue (failed processing)"
-  value       = "bp-ecg-${var.environment}-dlq"
+output "bucket_silver" {
+  description = "MinIO bucket - silver layer"
+  value       = "bp-ecg-${var.environment}-silver"
+}
+
+output "bucket_gold" {
+  description = "MinIO bucket - gold layer"
+  value       = "bp-ecg-${var.environment}-gold"
 }
 
 output "docker_network" {

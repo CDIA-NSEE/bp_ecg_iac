@@ -77,12 +77,12 @@ resource "docker_container" "minio_init" {
   command = [
     join(" && ", [
       "until mc alias set local http://minio:9000 ${var.minio_root_user} ${var.minio_root_password}; do sleep 2; done",
-      "mc mb --ignore-existing local/bp-ecg-${var.environment}-intake",
-      "mc mb --ignore-existing local/bp-ecg-${var.environment}-images",
-      "mc mb --ignore-existing local/bp-ecg-${var.environment}-rejected",
-      "mc mb --ignore-existing local/bp-ecg-${var.environment}-lake",
-      "mc mb --ignore-existing local/bp-ecg-${var.environment}-dlq",
-      "mc anonymous set download local/bp-ecg-${var.environment}-images",
+      "mc mb --ignore-existing local/bp-ecg-${var.environment}-coal",
+      "mc mb --ignore-existing local/bp-ecg-${var.environment}-copper",
+      "mc mb --ignore-existing local/bp-ecg-${var.environment}-iron",
+      "mc mb --ignore-existing local/bp-ecg-${var.environment}-bronze",
+      "mc mb --ignore-existing local/bp-ecg-${var.environment}-silver",
+      "mc mb --ignore-existing local/bp-ecg-${var.environment}-gold",
       "echo 'MinIO buckets initialized successfully'",
     ])
   ]

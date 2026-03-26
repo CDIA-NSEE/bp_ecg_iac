@@ -1,0 +1,42 @@
+name: Terraform Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  minio-test:
+    name: MinIO Integration Test
+    runs-on: ubuntu-latest
+
+    env:
+      # Required variables — dummy values safe for ephemeral CI runners.
+      TF_VAR_minio_root_user:        "testadmin"
+      TF_VAR_minio_root_password:    "testpassword123"
+      TF_VAR_postgres_user:          "testpg"
+      TF_VAR_postgres_password:      "testpgpassword"
+      TF_VAR_airflow_admin_password: "testairflow123"
+      TF_VAR_airflow_secret_key:     "test-secret-key-for-ci"
+      TF_VAR_data_volume_path:       "/tmp/bp-ecg-test"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.9"
+
+      - name: Create test data directory
+        run: mkdir -p /tmp/bp-ecg-test
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Test
+        run: terraform test
